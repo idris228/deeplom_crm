@@ -21,9 +21,6 @@ from .serializers import (
 
 
 class AuthViewSet(viewsets.GenericViewSet):
-    """
-    Аутентификация пользователей (JWT)
-    """
     permission_classes = [AllowAny]
 
     def get_serializer_class(self):
@@ -170,9 +167,6 @@ class AuthViewSet(viewsets.GenericViewSet):
     ),
 )
 class UserViewSet(viewsets.ModelViewSet):
-    """
-    Управление пользователями (CRUD)
-    """
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
 
