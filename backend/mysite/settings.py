@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-5qx6refp=uwvkd46gye3mw@b90)2^orqvvl(@yon3xg17rm%o$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['194.87.239.213', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -51,28 +51,28 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',  # JWT токены
-        'rest_framework.authentication.SessionAuthentication',  # Для админки
+        'rest_framework.authentication.SessionAuthentication',  # для админки
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # Требовать авторизацию по умолчанию
+        'rest_framework.permissions.IsAuthenticated',  # требовать авторизацию по умолчанию
     ],
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),  # Токен живёт 1 час
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # Refresh токен - 7 дней
-    'ROTATE_REFRESH_TOKENS': True,  # Обновлять refresh токен при использовании
-    'BLACKLIST_AFTER_ROTATION': True,  # Старые токены в чёрный список
-    'AUTH_HEADER_TYPES': ('Bearer',),  # Тип заголовка: Authorization: Bearer <token>
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),  # токен живёт 1 час
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # refresh токен - 7 дней
+    'ROTATE_REFRESH_TOKENS': True,  # обновлять refresh токен при использовании
+    'BLACKLIST_AFTER_ROTATION': True,  # старые токены в чёрный список
+    'AUTH_HEADER_TYPES': ('Bearer',),  # тип заголовка: Authorization: Bearer <token>
 }
 
-PECTACULAR_SETTINGS = {
+SPECTACULAR_SETTINGS = {
     'TITLE': 'CRM API',
     'DESCRIPTION': 'API для CRM системы',
     'VERSION': '1.0.0',
     'COMPONENT_SPLIT_REQUEST': True,
     'SERVE_INCLUDE_SCHEMA': False,
-    # Добавляем поддержку JWT в Swagger
+    # добавляем поддержку JWT в Swagger
     'SECURITY': [{'Bearer': []}],
     'COMPONENTS': {
         'securitySchemes': {
@@ -84,9 +84,6 @@ PECTACULAR_SETTINGS = {
         }
     },
 }
-
-STATIC_URL = 'static/'
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -164,7 +161,10 @@ USE_I18N = True
 
 USE_TZ = True
 
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
-
