@@ -15,7 +15,13 @@ class User(AbstractUser):
         default=Role.EMPLOYEE,
         verbose_name='Роль'
     )
-    company_id = models.PositiveIntegerField(default=1, db_index=True, verbose_name='ID компании')
+
+    company = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name='Название компании'
+    )
 
     phone = models.CharField(
         max_length=20,

@@ -110,16 +110,24 @@ class AuthViewSet(viewsets.GenericViewSet):
             'user': UserSerializer(user).data
         })
 
-
     @extend_schema(
-        summary="Регистрация пользователя",
-        description="Создание нового пользователя (с подтверждением пароля).",
+        summary="Регистрация администратора компании",
+        description=(
+                "Создание нового пользователя с ролью администратора. "
+                "Обязательные поля: username, password, password2. "
+                "Остальные поля необязательные."
+        ),
         request=RegisterSerializer,
         examples=[
             OpenApiExample(
                 "Пример",
                 value={
+                    "company": "МедКлиника",
+                    "first_name": "Иван",
+                    "last_name": "Иванов",
                     "username": "newuser",
+                    "email": "newuser@example.com",
+                    "phone": "+79999999999",
                     "password": "StrongPass123!",
                     "password2": "StrongPass123!"
                 },
@@ -140,7 +148,6 @@ class AuthViewSet(viewsets.GenericViewSet):
             'refresh': str(refresh),
             'user': UserSerializer(user).data
         }, status=status.HTTP_201_CREATED)
-
 
     @extend_schema(
         summary="Выход из системы",

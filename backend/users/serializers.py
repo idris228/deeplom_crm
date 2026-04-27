@@ -51,23 +51,22 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True,
         required=True,
-        validators=[validate_password],
-        style={'input_type': 'password'}
+        validators=[validate_password]
     )
     password2 = serializers.CharField(
         write_only=True,
         required=True,
-        style={'input_type': 'password'},
         label='Подтверждение пароля'
     )
 
     class Meta:
         model = User
         fields = [
-            'username', 'email', 'password', 'password2',
+            'company', 'username', 'email', 'password', 'password2',
             'first_name', 'last_name', 'phone'
         ]
         extra_kwargs = {
+            'company': {'required': False},
             'email': {'required': False},
             'first_name': {'required': False},
             'last_name': {'required': False},
