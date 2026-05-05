@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'corsheaders',
     'users.apps.UsersConfig',
+    'leads.apps.LeadsConfig',
+    'deals.apps.DealsConfig',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

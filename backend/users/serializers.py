@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
-from .models import User, Lead, Deal, LeadHistory, DealHistory
+from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'username', 'email', 'first_name', 'last_name',
-            'role', 'phone', 'position', 'avatar',
+            'role', 'company_id', 'phone', 'position', 'avatar',
             'is_active', 'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
@@ -21,7 +21,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'username', 'email', 'password', 'first_name', 'last_name',
-            'role', 'phone', 'position'
+            'role', 'company_id', 'phone', 'position'
         ]
 
     def create(self, validated_data):
@@ -62,11 +62,12 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'company', 'username', 'email', 'password', 'password2',
+            'company', 'company_id', 'username', 'email', 'password', 'password2',
             'first_name', 'last_name', 'phone'
         ]
         extra_kwargs = {
             'company': {'required': False},
+            'company_id': {'required': False},
             'email': {'required': False},
             'first_name': {'required': False},
             'last_name': {'required': False},
@@ -91,78 +92,3 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
-
-
-class LeadSerializer(serializers.ModelSerializer):
-    responsible_id = serializers.PrimaryKeyRelatedField(
-        source='responsible',
-        queryset=User.objects.all(),
-    )
-
-    class Meta:
-        model = Lead
-        fields = [
-            'id', 'first_name', 'last_name', 'phone', 'email', 'source',
-            'status', 'budget', 'comment', 'responsible_id',
-            'created_at', 'updated_at',
-        ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
-
-
-class DealSerializer(serializers.ModelSerializer):
-    responsible_id = serializers.PrimaryKeyRelatedField(
-        source='responsible',
-        queryset=User.objects.all(),
-    )
-    lead_id = serializers.PrimaryKeyRelatedField(
-        source='lead',
-        queryset=Lead.objects.all(),
-        required=False,
-        allow_null=True,
-    )
-
-    class Meta:
-        model = Deal
-        fields = [
-            'id', 'title', 'client_id', 'lead_id', 'amount', 'currency',
-            'stage', 'close_reason', 'responsible_id', 'expected_close_date',
-            'created_at', 'updated_at', 'closed_at',
-        ]
-        read_only_fields = ['id', 'created_at', 'updated_at', 'closed_at']
-
-    def validate(self, attrs):
-        stage = attrs.get('stage', getattr(self.instance, 'stage', Deal.Stage.NEW))
-        close_reason = attrs.get('close_reason', getattr(self.instance, 'close_reason', None))
-        if stage == Deal.Stage.LOST and not close_reason:
-            raise serializers.ValidationError({'close_reason': 'Поле обязательно при закрытии сделки как lost.'})
-        return attrs
-
-
-class LeadHistorySerializer(serializers.ModelSerializer):
-    changed_by_id = serializers.IntegerField(read_only=True)
-
-    class Meta:
-        model = LeadHistory
-        fields = ['id', 'action', 'old_value', 'new_value', 'changed_by_id', 'created_at']
-
-
-class DealHistorySerializer(serializers.ModelSerializer):
-    changed_by_id = serializers.IntegerField(read_only=True)
-
-    class Meta:
-        model = DealHistory
-        fields = ['id', 'action', 'old_value', 'new_value', 'changed_by_id', 'created_at']
-
-
-class LeadConvertResponseSerializer(serializers.Serializer):
-    lead_id = serializers.IntegerField()
-    deal_id = serializers.IntegerField()
-    status = serializers.CharField()
-
-
-class DealStageSerializer(serializers.Serializer):
-    stage = serializers.ChoiceField(choices=Deal.Stage.choices)
-
-
-class DealCloseLostSerializer(serializers.Serializer):
-    close_reason = serializers.CharField()
